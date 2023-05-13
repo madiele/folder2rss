@@ -4,7 +4,8 @@ import io
 import logging
 import json
 import mimetypes
-from http.server import SimpleHTTPRequestHandler, HTTPServer
+from RangeHTTPServer import RangeRequestHandler as SimpleHTTPRequestHandler
+from http.server import HTTPServer
 from urllib.parse import urljoin
 from urllib.parse import urlparse, unquote
 from urllib.parse import urlunsplit
