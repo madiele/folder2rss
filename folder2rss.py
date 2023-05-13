@@ -125,7 +125,10 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
         new_path = path
         if config['subfolder'] != "":
             new_path = path.replace("/" + config['subfolder'], "")
-        return os.path.join(os.getcwd(), config["directory"], new_path[1:])
+        final_path = os.path.join(os.getcwd(), config["directory"], new_path[1:])
+        if not os.path.abspath(final_path).startswith(os.getcwd()):
+            return None
+        return final_path
 
 def main():
     server = HTTPServer(("0.0.0.0", int(8000)), RSSRequestHandler)
