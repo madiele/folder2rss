@@ -41,6 +41,7 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
     def list_directory(self, path) -> io.BytesIO | None:
         return
 
+
     def do_GET(self):
         parsed_path = urlparse(self.path)
         logging.info("requested path: {}".format(parsed_path))
@@ -121,7 +122,10 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
         return base +"/"
 
     def translate_path(self, path):
-        return os.path.join(os.getcwd(), config["directory"], path[1:])
+        new_path = path
+        if config['subfolder'] != "":
+            new_path = path.replace("/" + config['subfolder'], "")
+        return os.path.join(os.getcwd(), config["directory"], new_path[1:])
 
 def main():
     server = HTTPServer(("0.0.0.0", int(8000)), RSSRequestHandler)
