@@ -1,4 +1,5 @@
 import os
+import io
 import logging
 import json
 import mimetypes
@@ -36,9 +37,7 @@ logging.info('subfolder: {}'.format(config['subfolder']))
 class RSSRequestHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed_path = urlparse(self.path)
-        if '..' in parsed_path:
-            self.send_error(401)
-            return
+        logging.info("requested path: {}".format(parsed_path))
         if parsed_path.path.startswith("/" + config['subfolder']):
             parsed_path = parsed_path._replace(path=parsed_path.path[len("/" + config['subfolder']):])
         if parsed_path.path.endswith(".rss"):
