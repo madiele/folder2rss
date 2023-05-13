@@ -110,7 +110,7 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
 
     def create_rss_item(self, folder_name, episode_path, filename):
         # to add a duration just add to the file name this pattern _%_hh:mm:ss_%_
-        duration_pattern = r'_%_(\d{1,2}:\d{2}:\d{2})_%_'
+        duration_pattern = r'___(\d{1,2}:\d{2}:\d{2})___'
         match = re.search(duration_pattern, episode_path)
         time_str = "00:00:00"
         if match:
