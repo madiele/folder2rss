@@ -108,14 +108,16 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
 
     def get_episode_link(self, folder_name, filename):
         base_url = self.get_website_root()
+        logging.debug(f"Base URL: {base_url}")
         file_url = urljoin(base_url, f"{folder_name}/{filename}")
+        logging.debug(f"relative File URL: "+ f"{folder_name}/{filename}")
+        logging.debug(f"File URL: {file_url}")
         return file_url
 
     def get_website_root(self):
         base = urlunsplit((f"{config['scheme']}", f"{config['host']}:{config['port']}", '', '', ''))
         if config['subfolder'] != "":
             base = urljoin(base, config['subfolder'])
-        logging.debug("website_root: {}".format(base))
         return base
 
     def translate_path(self, path):
