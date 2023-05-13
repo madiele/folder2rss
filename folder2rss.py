@@ -8,7 +8,6 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse, unquote
 from urllib.parse import urlunsplit
 from xml.etree.ElementTree import Element, SubElement, tostring
-logging.basicConfig(level=logging.DEBUG)
 
 # Load configuration
 CONFIG_FILE = "config.json"
@@ -23,6 +22,21 @@ for key, value in os.environ.items():
     if key.startswith(ENV_PREFIX):
         config_key = key[len(ENV_PREFIX):].lower()
         config[config_key] = value
+
+config.setdefault("loglevel", "INFO")
+
+def get_logging_config(log_level):
+    log_level_dict = {
+        'DEBUG': logging.DEBUG,
+        'INFO': logging.INFO,
+        'WARNING': logging.WARNING,
+        'ERROR': logging.ERROR,
+        'CRITICAL': logging.CRITICAL
+    }
+    return log_level_dict[log_level]
+
+logging.basicConfig(level=get_logging_config(config['loglevel']))
+logging.info('loglevel: {}'.format(config['loglevel']))
 
 # Set default values if not provided in config or environment variables
 config.setdefault("scheme", "http")
