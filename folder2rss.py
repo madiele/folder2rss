@@ -118,7 +118,7 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
         base = urlunsplit((f"{config['scheme']}", f"{config['host']}:{config['port']}", '', '', ''))
         if config['subfolder'] != "":
             base = urljoin(base, config['subfolder'])
-        return base
+        return base +"/"
 
     def translate_path(self, path):
         return os.path.join(os.getcwd(), config["directory"], path[1:])
