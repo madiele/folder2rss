@@ -112,7 +112,10 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
         return file_url
 
     def get_website_root(self):
-        return urlunsplit((f"{config['scheme']}", f"{config['host']}:{config['port']}", f"/{config['subfolder']}", '', ''))
+        base = urlunsplit((f"{config['scheme']}", f"{config['host']}:{config['port']}", '', '', ''))
+        if config['subfolder'] != "":
+            base = urljoin(base, config['subfolder'])
+        return base
 
     def translate_path(self, path):
         return os.path.join(os.getcwd(), config["directory"], path[1:])
