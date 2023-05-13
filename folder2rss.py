@@ -25,9 +25,13 @@ for key, value in os.environ.items():
 
 # Set default values if not provided in config or environment variables
 config.setdefault("host", "127.0.0.1")
+logging.info('host: {}'.format(config['host']))
 config.setdefault("port", 8000)
+logging.info('port: {}'.format(config['port']))
 config.setdefault("directory", "podcasts")
+logging.info('directory: {}'.format(config['directory']))
 config.setdefault("subfolder", "")
+logging.info('subfolder: {}'.format(config['subfolder']))
 
 class RSSRequestHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -45,7 +49,8 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
             super().do_GET()
 
     def send_rss_feed(self, folder_name):
-        folder_path = os.path.join(config["directory"], folder_name)
+        base_folder = os.path.join(os.getcwd(), config['directory'])
+        folder_path = os.path.join(base_folder, folder_name)
         logging.info("folder_path: %s", folder_path)
         if os.path.isdir(folder_path):
             metadata_file = os.path.join(folder_path, "metadata.json")
@@ -57,16 +62,16 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
             logging.info("metadata: %s", metadata)
             rss = self.create_rss_feed(folder_name, folder_path, metadata)
             self.send_response(200)
-            self.send_header("Content-Type", "application/rss+xml; charset=utf-8")
+            self.send_header("Content-Type", "application/xml")
             self.end_headers()
-            logging.info("rss: %s", rss)
             self.wfile.write(tostring(rss))
         else:
             self.send_error(404, "Not Found")
 
     def create_rss_feed(self, folder_name, folder_path, metadata):
-        rss = Element("rss", {"version": "2.0"})
+        rss = Element("{http://www.itunes.com/dtds/podcast-1.0.dtd}rss", {"version": "2.0", "xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd"})
         channel = SubElement(rss, "channel")
+        SubElement(channel, "itunes:block").text = "yes"
         SubElement(channel, "title").text = metadata.get("title", folder_name)
         SubElement(channel, "link").text = self.get_podcast_link(folder_name)
         SubElement(channel, "description").text = metadata.get("description", "")
@@ -108,7 +113,7 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
         return os.path.join(os.getcwd(), config["directory"], path[1:])
 
 def main():
-    server = HTTPServer((config["host"], config["port"]), RSSRequestHandler)
+    server = HTTPServer((config["host"], int(config["port"])), RSSRequestHandler)
     print(f"Serving on http://{config['host']}:{config['port']}/{config['subfolder']}")
     server.serve_forever()
 

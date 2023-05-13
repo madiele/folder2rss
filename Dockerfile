@@ -14,5 +14,5 @@ EXPOSE 8000
 RUN mkdir /app/podcasts
 
 # Run the Python script when the container starts
-CMD ["python", "folder2rss.py"]
+CMD ["python3", "folder2rss.py"]
 
