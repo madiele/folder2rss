@@ -25,7 +25,7 @@ for key, value in os.environ.items():
         config[config_key] = value
 
 # Set default values if not provided in config or environment variables
-config.setdefault("host", "127.0.0.1")
+config.setdefault("host", "0.0.0.0")
 logging.info('host: {}'.format(config['host']))
 config.setdefault("port", 8000)
 logging.info('port: {}'.format(config['port']))
@@ -116,7 +116,7 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
         return os.path.join(os.getcwd(), config["directory"], path[1:])
 
 def main():
-    server = HTTPServer((config["host"], int(config["port"])), RSSRequestHandler)
+    server = HTTPServer(("0.0.0.0", int(8000)), RSSRequestHandler)
     print(f"Serving on http://{config['host']}:{config['port']}/{config['subfolder']}")
     server.serve_forever()
 
