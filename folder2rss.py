@@ -5,6 +5,7 @@ import logging
 import json
 import mimetypes
 from RangeHTTPServer import RangeRequestHandler as SimpleHTTPRequestHandler
+from email.utils import formatdate
 from http.server import HTTPServer
 from urllib.parse import urljoin
 from urllib.parse import urlparse, unquote
@@ -126,6 +127,8 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
         })
         SubElement(item, "thumbnail").text = self.get_episode_thumb_link(folder_name, filename)
         SubElement(item, "itunes:duration").text = time_str
+        pub_date = formatdate(os.path.getctime(episode_path), usegmt=True)
+        SubElement(item, "pubDate").text = pub_date
 
         return item
 
