@@ -35,6 +35,10 @@ config.setdefault("subfolder", "")
 logging.info('subfolder: {}'.format(config['subfolder']))
 
 class RSSRequestHandler(SimpleHTTPRequestHandler):
+
+    def list_directory(self, path) -> io.BytesIO | None:
+        return
+
     def do_GET(self):
         parsed_path = urlparse(self.path)
         logging.info("requested path: {}".format(parsed_path))
