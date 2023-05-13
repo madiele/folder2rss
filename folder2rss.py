@@ -1,4 +1,5 @@
 import os
+import re
 import io
 import logging
 import json
@@ -108,6 +109,12 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
         return folder_url
 
     def create_rss_item(self, folder_name, episode_path, filename):
+        # to add a duration just add to the file name this pattern _%_hh:mm:ss_%_
+        duration_pattern = r'_%_(\d{1,2}:\d{2}:\d{2})_%_'
+        match = re.search(duration_pattern, episode_path)
+        time_str = "00:00:00"
+        if match:
+            time_str = match.group(1)
         item = Element("item")
         SubElement(item, "title").text = os.path.splitext(filename)[0]
         SubElement(item, "link").text = self.get_episode_link(folder_name, filename)
@@ -117,6 +124,8 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
             "length": str(os.path.getsize(episode_path))
         })
         SubElement(item, "thumbnail").text = self.get_episode_thumb_link(folder_name, filename)
+        SubElement(item, "itunes:duration").text = time_str
+
         return item
 
     def get_pod_thumb_link(self, folder_name):
