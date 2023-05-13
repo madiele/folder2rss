@@ -11,5 +11,6 @@ services:
       RSS_SERVER_PORT: "8000"
       RSS_SERVER_DIRECTORY: "podcasts"
       RSS_SERVER_SUBFOLDER: "folder2rss"
+      RSS_SERVER_SCHEME: "http"
     volumes:
       - "./podcasts:/app/podcasts:ro"

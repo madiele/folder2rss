@@ -25,7 +25,9 @@ for key, value in os.environ.items():
         config[config_key] = value
 
 # Set default values if not provided in config or environment variables
-config.setdefault("host", "0.0.0.0")
+config.setdefault("scheme", "http")
+logging.info('scheme: {}'.format(config['scheme']))
+config.setdefault("port", 8000)
 logging.info('host: {}'.format(config['host']))
 config.setdefault("port", 8000)
 logging.info('port: {}'.format(config['port']))
@@ -110,7 +112,7 @@ class RSSRequestHandler(SimpleHTTPRequestHandler):
         return file_url
 
     def get_website_root(self):
-        return urlunsplit(('http', f"{config['host']}:{config['port']}", f"/{config['subfolder']}", '', ''))
+        return urlunsplit((f"{config['scheme']}", f"{config['host']}:{config['port']}", f"/{config['subfolder']}", '', ''))
 
     def translate_path(self, path):
         return os.path.join(os.getcwd(), config["directory"], path[1:])
